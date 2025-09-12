@@ -66,7 +66,6 @@ public class FirstFragment extends Fragment {
         featuredVerModelsList.add(new FeaturedVerModel(R.drawable.ver2,"Featured 2","Description 2","4.8","10:00 - 8:00"));
         featuredVerModelsList.add(new FeaturedVerModel(R.drawable.ver3,"Featured 3","Description 3","4.8","10:00 - 8:00"));
 
-
         featuredVerAdapter = new FeaturedVerAdapter(featuredVerModelsList);
         recyclerView2.setAdapter(featuredVerAdapter);
 

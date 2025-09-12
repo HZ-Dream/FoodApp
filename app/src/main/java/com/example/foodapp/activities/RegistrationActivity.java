@@ -3,6 +3,9 @@ package com.example.foodapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,18 +15,53 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.foodapp.MainActivity;
 import com.example.foodapp.R;
+import com.example.foodapp.datas.dbConnect;
+import com.example.foodapp.models.Users;
 
 public class RegistrationActivity extends AppCompatActivity {
+    dbConnect dbConnect;
+    EditText edtEmailReg, edtNameReg, edtPhoneReg, edtPasswordReg;
+    Button btnRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_registration);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        dbConnect = new dbConnect(this);
+
+        edtEmailReg = findViewById(R.id.edtEmailReg);
+        edtNameReg = findViewById(R.id.edtNameReg);
+        edtPhoneReg = findViewById(R.id.edtPhoneReg);
+        edtPasswordReg = findViewById(R.id.edtPasswordReg);
+        btnRegister = findViewById(R.id.btnRegister);
+
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = edtEmailReg.getText().toString();
+                String name = edtNameReg.getText().toString();
+                String phone = edtPhoneReg.getText().toString();
+                String password = edtPasswordReg.getText().toString();
+
+                if(email.isEmpty() || name.isEmpty() || phone.isEmpty() || password.isEmpty()){
+                    Toast.makeText(RegistrationActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                }else{
+                    boolean checkEmail = dbConnect.checkEmail(email);
+                    if(checkEmail){
+                        Toast.makeText(RegistrationActivity.this, "Email already exists", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Users users = new Users(email, name, phone, password);
+                        boolean result = dbConnect.addUser(users);
+                        if(result){
+                            startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
+                        }else{
+                            Toast.makeText(RegistrationActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+
+            }
         });
     }
 

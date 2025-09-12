@@ -45,7 +45,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/edtEmailReg"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/email_address"
@@ -61,7 +61,7 @@
         android:layout_marginTop="30dp" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/edtNameReg"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/full_name"
@@ -69,7 +69,7 @@
         android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editText"
+        app:layout_constraintTop_toBottomOf="@id/edtEmailReg"
         app:layout_constraintWidth_percent=".8"
         android:drawableStart="@drawable/baseline_account_circle_24"
         android:drawablePadding="13dp"
@@ -77,7 +77,23 @@
         android:layout_marginTop="30dp" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/edtPhoneReg"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/phone_number"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtNameReg"
+        app:layout_constraintWidth_percent=".8"
+        android:drawableStart="@drawable/outline_chat_24"
+        android:drawablePadding="13dp"
+        android:backgroundTint="#CCCCCC"
+        android:layout_marginTop="30dp" />
+
+    <EditText
+        android:id="@+id/edtPasswordReg"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/password"
@@ -85,7 +101,7 @@
         android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editText2"
+        app:layout_constraintTop_toBottomOf="@id/edtPhoneReg"
         app:layout_constraintWidth_percent=".8"
         android:drawableStart="@drawable/password_key"
         android:drawablePadding="13dp"
@@ -93,7 +109,7 @@
         android:layout_marginTop="30dp" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnRegister"
         android:onClick="mainActivity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -105,7 +121,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText3"
+        app:layout_constraintTop_toBottomOf="@+id/edtPasswordReg"
         app:layout_constraintVertical_bias=".2"
         app:layout_constraintWidth_percent=".8" />
 
@@ -120,7 +136,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button"
+        app:layout_constraintTop_toBottomOf="@+id/btnRegister"
         app:layout_constraintHorizontal_bias=".4" />
 
     <TextView
@@ -136,7 +152,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/button"
+        app:layout_constraintTop_toBottomOf="@+id/btnRegister"
         app:layout_constraintHorizontal_bias="0.1"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

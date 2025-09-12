@@ -22,9 +22,6 @@
             android:exported="false" />
         <activity
             android:name=".activities.WelcomeActivity"
-            android:exported="false"></activity>
-        <activity
-            android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.FoodApp.NoActionBar">
             <intent-filter>
@@ -32,6 +29,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.FoodApp.NoActionBar">
         </activity>
 
         <meta-data
