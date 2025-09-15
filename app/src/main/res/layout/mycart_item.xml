@@ -27,17 +27,35 @@
             android:layout_marginLeft="4dp"
             android:layout_marginTop="10dp">
 
-            <TextView
-                android:id="@+id/detailed_name"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:maxLines="1"
-                android:textSize="24sp"
-                android:textColor="@color/black"
-                android:text="Name"
-                android:fontFamily="@font/amarante" />
+                android:orientation="horizontal">
 
+                <TextView
+                    android:id="@+id/detailed_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/amarante"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="Name"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btnRemoveCart"
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:text="X"
+                    android:textSize="10sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginEnd="10dp"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -48,17 +66,18 @@
                 <ImageView
                     android:layout_marginTop="3dp"
                     android:id="@+id/imageView8"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:src="@drawable/start"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/outline_archive_24"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/detailed_rating"
+                    android:id="@+id/detailed_quantity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5.0"
+                    android:text="1"
+                    android:textSize="22sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/imageView8"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -69,12 +88,12 @@
                     android:layout_height="20dp"
                     android:src="@drawable/dollarsymbol"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/textView10"
-                    app:layout_constraintTop_toTopOf="@+id/textView10"
+                    app:layout_constraintEnd_toStartOf="@+id/cartItemPrice"
+                    app:layout_constraintTop_toTopOf="@+id/cartItemPrice"
                     app:tint="@color/purple_500" />
 
                 <TextView
-                    android:id="@+id/textView10"
+                    android:id="@+id/cartItemPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/amarante"
@@ -87,8 +106,6 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
         </LinearLayout>
 
     </LinearLayout>

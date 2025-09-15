@@ -1,62 +1,45 @@
 package com.example.foodapp.datas;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-import com.example.foodapp.models.Users;
-
 public class dbConnect extends SQLiteOpenHelper {
     private static String dbName = "FoodApp";
-    private static String tableName = "Users";
-    private static int dbVersion = 1;
-    private static String ID = "id";
-    private static String Email = "email";
-    private static String Name = "name";
-    private static String Phone = "phone";
-    private static String Password = "password";
+    private static int dbVersion = 4;
 
     public dbConnect(@Nullable Context context) {
         super(context, dbName, null, dbVersion);
     }
 
+    // Chỉ chạy khi chưa có database
     @Override
-    public void onCreate(SQLiteDatabase sqlDb) {
-        String query = "CREATE TABLE " + tableName + "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                Email + " TEXT, " + Name + " TEXT, " + Phone + " TEXT, " + Password + " TEXT)";
-        sqlDb.execSQL(query);
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE Users (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "email TEXT, name TEXT, phone TEXT, password TEXT)");
+
+        db.execSQL("CREATE TABLE Categories (id INTEGER PRIMARY KEY AUTOINCREMENT, " + "name TEXT, image TEXT)");
+
+        db.execSQL("CREATE TABLE Products (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name TEXT, price REAL, timeCook TEXT, image TEXT, catId INTEGER, FOREIGN KEY(catId) REFERENCES Categories(id))");
+
+        db.execSQL("CREATE TABLE Carts (id INTEGER PRIMARY KEY AUTOINCREMENT, " + "userId INTEGER, " +
+                "foodId INTEGER, price REAL, quantity INTEGER, subTotal REAL, " +
+                "FOREIGN KEY(userId) REFERENCES Users(id), " +
+                "FOREIGN KEY(foodId) REFERENCES Foods(id))");
     }
 
+    // Chỉ chạy khi có thay đổi version trong db
+    // version now: 4
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + tableName);
-        onCreate(db);
-    }
+        if (oldVersion < 4) {
+            db.execSQL("DROP TABLE IF EXISTS Foods");
 
-    public boolean addUser(Users users) {
-        SQLiteDatabase sqlDb = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(Email, users.getEmail());
-        values.put(Name, users.getName());
-        values.put(Phone, users.getPhone());
-        values.put(Password, users.getPassword());
-        long result = sqlDb.insert(tableName, null, values);
-        return result != -1;
-    }
-
-    public boolean checkEmail(String email) {
-        SQLiteDatabase sqlDb = this.getWritableDatabase();
-        Cursor cursor = sqlDb.rawQuery("SELECT * FROM " + tableName + " WHERE " + Email + " = ?", new String[]{email});
-        return cursor.getCount() > 0;
-    }
-
-    public boolean checkLogin(String email, String password){
-        SQLiteDatabase sqlDb = this.getWritableDatabase();
-        Cursor cursor = sqlDb.rawQuery("SELECT * FROM " + tableName + " WHERE " + Email + " = ? AND " + Password + " = ?", new String[]{email, password});
-        return cursor.getCount() > 0;
+            db.execSQL("CREATE TABLE Products (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "name TEXT, price REAL, timeCook TEXT, image TEXT, catId INTEGER, FOREIGN KEY(catId) REFERENCES Categories(id))");
+        }
     }
 }

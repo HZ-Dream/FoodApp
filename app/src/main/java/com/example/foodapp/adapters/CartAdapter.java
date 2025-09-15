@@ -1,40 +1,78 @@
 package com.example.foodapp.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodapp.R;
-import com.example.foodapp.models.CartModel;
+import com.example.foodapp.datas.CartsDAO;
+import com.example.foodapp.models.CartItem;
 
 import java.util.List;
+import java.util.Locale;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
+    public interface OnCartItemRemovedListener {
+        void onItemRemoved();
+    }
 
-    List<CartModel> list;
+    private final OnCartItemRemovedListener listener;
 
-    public CartAdapter(List<CartModel> list) {
+    private final Context context;
+    private final List<CartItem> list;
+    private final CartsDAO cartsDAO;
+
+    public CartAdapter(Context context, List<CartItem> list, OnCartItemRemovedListener listener) {
+        this.context = context;
         this.list = list;
+        this.listener = listener;
+        this.cartsDAO = new CartsDAO(context);
     }
 
     @NonNull
     @Override
-    public CartAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.mycart_item,parent,false));
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.mycart_item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CartAdapter.ViewHolder holder, int position) {
-        holder.imageView.setImageResource(list.get(position).getImage());
-        holder.name.setText(list.get(position).getName());
-        holder.rating.setText(list.get(position).getRating());
-        holder.price.setText(list.get(position).getPrice());
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        CartItem item = list.get(position);
+        int imageId = context.getResources().getIdentifier(item.getProductImage(), "drawable", context.getPackageName());
 
+        holder.imageView.setImageResource(imageId);
+        holder.name.setText(item.getProductName());
+        holder.quantity.setText("" + item.getQuantity());
+        holder.price.setText("" +item.getProductPrice());
+
+        holder.btnRemove.setOnClickListener(v -> {
+            int currentPosition = holder.getAdapterPosition();
+            if (currentPosition == RecyclerView.NO_POSITION) {
+                return;
+            }
+
+            CartItem itemToRemove = list.get(currentPosition);
+
+            cartsDAO.removeCart(itemToRemove.getCartId());
+
+            list.remove(currentPosition);
+
+            notifyItemRemoved(currentPosition);
+
+            Toast.makeText(context, "Removed " + itemToRemove.getProductName(), Toast.LENGTH_SHORT).show();
+
+            if (listener != null) {
+                listener.onItemRemoved();
+            }
+        });
     }
 
     @Override
@@ -44,13 +82,16 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        TextView name,rating,price;
+        Button btnRemove;
+        TextView name, quantity, price;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.detailed_img);
             name = itemView.findViewById(R.id.detailed_name);
-            rating = itemView.findViewById(R.id.detailed_rating);
-            price = itemView.findViewById(R.id.textView10);
+            quantity = itemView.findViewById(R.id.detailed_quantity);
+            price = itemView.findViewById(R.id.cartItemPrice);
+            btnRemove = itemView.findViewById(R.id.btnRemoveCart);
         }
     }
 }

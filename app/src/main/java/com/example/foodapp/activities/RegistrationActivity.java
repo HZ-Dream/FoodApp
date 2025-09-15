@@ -15,11 +15,12 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.foodapp.MainActivity;
 import com.example.foodapp.R;
+import com.example.foodapp.datas.UsersDAO;
 import com.example.foodapp.datas.dbConnect;
 import com.example.foodapp.models.Users;
 
 public class RegistrationActivity extends AppCompatActivity {
-    dbConnect dbConnect;
+    UsersDAO usersDAO;
     EditText edtEmailReg, edtNameReg, edtPhoneReg, edtPasswordReg;
     Button btnRegister;
 
@@ -28,7 +29,8 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_registration);
-        dbConnect = new dbConnect(this);
+
+        usersDAO = new UsersDAO(this);
 
         edtEmailReg = findViewById(R.id.edtEmailReg);
         edtNameReg = findViewById(R.id.edtNameReg);
@@ -47,12 +49,12 @@ public class RegistrationActivity extends AppCompatActivity {
                 if(email.isEmpty() || name.isEmpty() || phone.isEmpty() || password.isEmpty()){
                     Toast.makeText(RegistrationActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 }else{
-                    boolean checkEmail = dbConnect.checkEmail(email);
+                    boolean checkEmail = usersDAO.checkEmail(email);
                     if(checkEmail){
                         Toast.makeText(RegistrationActivity.this, "Email already exists", Toast.LENGTH_SHORT).show();
                     }else{
                         Users users = new Users(email, name, phone, password);
-                        boolean result = dbConnect.addUser(users);
+                        boolean result = usersDAO.addUser(users);
                         if(result){
                             startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
                         }else{

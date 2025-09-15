@@ -1,6 +1,7 @@
 package com.example.foodapp.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,10 +16,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.foodapp.MainActivity;
 import com.example.foodapp.R;
+import com.example.foodapp.datas.UsersDAO;
 import com.example.foodapp.datas.dbConnect;
 
 public class LoginActivity extends AppCompatActivity {
-    dbConnect dbConnect;
+    UsersDAO usersDAO;
     EditText edtEmailLog, edtPasswordLog;
     Button btnLogin;
 
@@ -27,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
-        dbConnect = new dbConnect(this);
+        usersDAO = new UsersDAO(this);
 
         edtEmailLog = findViewById(R.id.edtEmailLog);
         edtPasswordLog = findViewById(R.id.edtPasswordLog);
@@ -42,9 +44,22 @@ public class LoginActivity extends AppCompatActivity {
                 if(email.isEmpty() || password.isEmpty()){
                     Toast.makeText(LoginActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 }else{
-                    boolean checkLogin = dbConnect.checkLogin(email, password);
+                    boolean checkLogin = usersDAO.checkLogin(email, password);
                     if(checkLogin){
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        String name = usersDAO.getUserNameByEmail(email);
+                        int userId = usersDAO.getUserIdByEmail(email);
+                        SharedPreferences prefs = getSharedPreferences("USER_DATA", MODE_PRIVATE);
+                        prefs.edit()
+                                .putBoolean("isLoggedIn", true)
+                                .putInt("userId", userId)
+                                .putString("email", email)
+                                .putString("name", name)
+                                .apply();
+
+                        Toast.makeText(LoginActivity.this, "Login successfully", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
                     } else{
                         Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
                     }
