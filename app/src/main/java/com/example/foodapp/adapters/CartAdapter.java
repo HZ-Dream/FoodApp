@@ -20,17 +20,16 @@ import java.util.List;
 import java.util.Locale;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
-    public interface OnCartItemRemovedListener {
-        void onItemRemoved();
+    public interface OnCartUpdatedListener {
+        void onCartUpdated();
     }
-
-    private final OnCartItemRemovedListener listener;
+    private final OnCartUpdatedListener listener;
 
     private final Context context;
     private final List<CartItem> list;
     private final CartsDAO cartsDAO;
 
-    public CartAdapter(Context context, List<CartItem> list, OnCartItemRemovedListener listener) {
+    public CartAdapter(Context context, List<CartItem> list, OnCartUpdatedListener listener) {
         this.context = context;
         this.list = list;
         this.listener = listener;
@@ -51,27 +50,22 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.imageView.setImageResource(imageId);
         holder.name.setText(item.getProductName());
         holder.quantity.setText("" + item.getQuantity());
-        holder.price.setText("" +item.getProductPrice());
+        holder.price.setText("" + item.getProductPrice());
+
+        holder.addQuantity.setOnClickListener(v -> {
+            cartsDAO.changeQuantityCart(item.getCartId(), "plus");
+            if (listener != null) listener.onCartUpdated();
+        });
+
+        holder.minusQuantity.setOnClickListener(v -> {
+            cartsDAO.changeQuantityCart(item.getCartId(), "minus");
+            if (listener != null) listener.onCartUpdated();
+        });
 
         holder.btnRemove.setOnClickListener(v -> {
-            int currentPosition = holder.getAdapterPosition();
-            if (currentPosition == RecyclerView.NO_POSITION) {
-                return;
-            }
-
-            CartItem itemToRemove = list.get(currentPosition);
-
-            cartsDAO.removeCart(itemToRemove.getCartId());
-
-            list.remove(currentPosition);
-
-            notifyItemRemoved(currentPosition);
-
-            Toast.makeText(context, "Removed " + itemToRemove.getProductName(), Toast.LENGTH_SHORT).show();
-
-            if (listener != null) {
-                listener.onItemRemoved();
-            }
+            cartsDAO.removeCart(item.getCartId());
+            Toast.makeText(context, "Removed " + item.getProductName(), Toast.LENGTH_SHORT).show();
+            if (listener != null) listener.onCartUpdated();
         });
     }
 
@@ -81,7 +75,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
+        ImageView imageView, addQuantity, minusQuantity;
         Button btnRemove;
         TextView name, quantity, price;
 
@@ -92,6 +86,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             quantity = itemView.findViewById(R.id.detailed_quantity);
             price = itemView.findViewById(R.id.cartItemPrice);
             btnRemove = itemView.findViewById(R.id.btnRemoveCart);
+            addQuantity = itemView.findViewById(R.id.btnAddQuantity);
+            minusQuantity = itemView.findViewById(R.id.btnMinusQuantity);
         }
     }
 }

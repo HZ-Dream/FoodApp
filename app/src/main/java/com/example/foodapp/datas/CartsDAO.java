@@ -39,6 +39,43 @@ public class CartsDAO {
         db.delete("Carts", "id = ?", new String[]{String.valueOf(id)});
     }
 
+    public void changeQuantityCart(int cartId, String type) {
+        db.beginTransaction();
+        try {
+            String query = "SELECT c.quantity, c.foodId, p.price FROM Carts c " +
+                    "INNER JOIN Products p ON c.foodId = p.id WHERE c.id = ?";
+            Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(cartId)});
+
+            if (cursor.moveToFirst()) {
+                int currentQuantity = cursor.getInt(0);
+                double productPrice = cursor.getDouble(2);
+
+                int newQuantity;
+
+                if ("plus".equals(type)) {
+                    newQuantity = currentQuantity + 1;
+                } else {
+                    newQuantity = currentQuantity - 1;
+                }
+
+                if (newQuantity <= 0) {
+                    removeCart(cartId);
+                } else {
+                    double newSubTotal = newQuantity * productPrice;
+
+                    ContentValues values = new ContentValues();
+                    values.put("quantity", newQuantity);
+                    values.put("subTotal", newSubTotal);
+                    db.update("Carts", values, "id = ?", new String[]{String.valueOf(cartId)});
+                }
+            }
+            cursor.close();
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
     public double getTotalPrice(int userId) {
         double totalPrice = 0.0;
         SQLiteDatabase readableDb = dbHelper.getReadableDatabase();

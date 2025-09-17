@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 
 public class dbConnect extends SQLiteOpenHelper {
     private static String dbName = "FoodApp";
-    private static int dbVersion = 4;
+    private static int dbVersion = 5;
 
     public dbConnect(@Nullable Context context) {
         super(context, dbName, null, dbVersion);
@@ -28,18 +28,20 @@ public class dbConnect extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE Carts (id INTEGER PRIMARY KEY AUTOINCREMENT, " + "userId INTEGER, " +
                 "foodId INTEGER, price REAL, quantity INTEGER, subTotal REAL, " +
                 "FOREIGN KEY(userId) REFERENCES Users(id), " +
-                "FOREIGN KEY(foodId) REFERENCES Foods(id))");
+                "FOREIGN KEY(foodId) REFERENCES Products(id))");
     }
 
     // Chỉ chạy khi có thay đổi version trong db
-    // version now: 4
+    // version now: 5
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 4) {
-            db.execSQL("DROP TABLE IF EXISTS Foods");
+        if (oldVersion < 5) {
+            db.execSQL("DROP TABLE IF EXISTS Carts");
 
-            db.execSQL("CREATE TABLE Products (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "name TEXT, price REAL, timeCook TEXT, image TEXT, catId INTEGER, FOREIGN KEY(catId) REFERENCES Categories(id))");
+            db.execSQL("CREATE TABLE Carts (id INTEGER PRIMARY KEY AUTOINCREMENT, " + "userId INTEGER, " +
+                    "foodId INTEGER, price REAL, quantity INTEGER, subTotal REAL, " +
+                    "FOREIGN KEY(userId) REFERENCES Users(id), " +
+                    "FOREIGN KEY(foodId) REFERENCES Products(id))");
         }
     }
 }

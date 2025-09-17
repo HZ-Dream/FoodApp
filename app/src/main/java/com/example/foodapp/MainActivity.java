@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.example.foodapp.activities.WelcomeActivity;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.navigation.NavController;
@@ -44,6 +44,15 @@ public class MainActivity extends AppCompatActivity {
 
         viewName.setText(name);
         viewEmail.setText(email);
+
+        binding.btnLogout.setOnClickListener(v -> {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.clear();
+            editor.apply();
+            Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+            startActivity(intent);
+            finish();
+        });
 
         setSupportActionBar(binding.appBarMain.toolbar);
 

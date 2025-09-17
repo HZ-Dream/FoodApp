@@ -23,7 +23,7 @@ import com.example.foodapp.models.CartItem;
 import java.util.List;
 import java.util.Locale;
 
-public class MyCartFragment extends Fragment implements CartAdapter.OnCartItemRemovedListener {
+public class MyCartFragment extends Fragment implements CartAdapter.OnCartUpdatedListener {
 
     private RecyclerView recyclerView;
     private TextView emptyCartTextView;
@@ -101,7 +101,7 @@ public class MyCartFragment extends Fragment implements CartAdapter.OnCartItemRe
     }
 
     @Override
-    public void onItemRemoved() {
+    public void onCartUpdated() {
         updateCartView();
     }
 }

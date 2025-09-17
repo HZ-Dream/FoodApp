@@ -26,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/amarante"
+            android:padding="10dp"
             android:text="10 weekend Delicious \nDinner Recipes"
             android:textColor="@color/white"
             android:textSize="25sp"
@@ -52,6 +53,7 @@
             android:layout_margin="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:text="your favourite and testy food is here!"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="@id/imageView"
