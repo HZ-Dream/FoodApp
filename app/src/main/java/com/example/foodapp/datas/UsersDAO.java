@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.foodapp.models.Users;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UsersDAO {
     private SQLiteDatabase db;
 
@@ -30,6 +33,42 @@ public class UsersDAO {
         boolean exists = cursor.getCount() > 0;
         cursor.close();
         return exists;
+    }
+
+    public int updateUser(Users user) {
+        SQLiteDatabase db = this.db;
+        ContentValues values = new ContentValues();
+        values.put("name", user.getName());
+        values.put("email", user.getEmail());
+        values.put("phone", user.getPhone());
+        values.put("password", user.getPassword());
+
+        return db.update("Users", values, "id = ?", new String[]{String.valueOf(user.getId())});
+    }
+
+    public List<Users> getUserByUserId(int userId) {
+        List<Users> usersList = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM Users WHERE id = ?", new String[]{String.valueOf(userId)});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            try {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                String email = cursor.getString(cursor.getColumnIndexOrThrow("email"));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                String phone = cursor.getString(cursor.getColumnIndexOrThrow("phone"));
+                String password = cursor.getString(cursor.getColumnIndexOrThrow("password"));
+
+                Users user = new Users(id, email, name, phone, password);
+                usersList.add(user);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+        return usersList;
     }
 
     public boolean checkLogin(String email, String password) {

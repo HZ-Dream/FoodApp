@@ -17,6 +17,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
 
     public interface OnOrderDetailClickListener {
         void onDetailClick(long orderId);
+
+        void onDeleteClick(long orderId);
     }
 
     private final List<Orders> orderList;
@@ -25,6 +27,12 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
     public OrderAdapter(List<Orders> orderList, OnOrderDetailClickListener listener) {
         this.orderList = orderList;
         this.listener = listener;
+    }
+
+    public void updateOrderList(List<Orders> newOrderList) {
+        this.orderList.clear();
+        this.orderList.addAll(newOrderList);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -42,11 +50,17 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         holder.tvOrderId.setText("Id: " + order.getId());
         holder.tvOrderDate.setText(" - " + order.getDateOrdered());
         holder.tvOrderStatus.setText(order.getStatus());
-        holder.tvOrderPrice.setText("$" + order.getSubTotal());
+        holder.tvOrderPrice.setText("" + order.getSubTotal());
 
         holder.btnDetail.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onDetailClick(order.getId());
+            }
+        });
+
+        holder.btnDelete.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onDeleteClick(order.getId());
             }
         });
     }
@@ -58,7 +72,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvOrderId, tvOrderDate, tvOrderStatus, tvOrderPrice;
-        ImageView btnDetail;
+        ImageView btnDetail, btnDelete;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -67,6 +81,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
             tvOrderStatus = itemView.findViewById(R.id.statusOrder);
             tvOrderPrice = itemView.findViewById(R.id.orderItemPrice);
             btnDetail = itemView.findViewById(R.id.btnDetailOrder);
+            btnDelete = itemView.findViewById(R.id.btnDeleteOrder);
         }
     }
 }

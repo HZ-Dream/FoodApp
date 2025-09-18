@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:orientation="vertical"
+    android:background="@color/mediumGray">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="My Info"
+        android:textColor="@color/white"
+        android:fontFamily="@font/amarante"
+        android:textSize="30sp"
+        android:textAlignment="center"
+        android:paddingTop="30dp"
+        android:layout_marginBottom="20dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:textColor="@color/white"
+        android:fontFamily="@font/amita"
+        android:textSize="25sp"/>
+
+    <EditText
+        android:id="@+id/userInfo_Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:textColor="@color/white"
+        android:fontFamily="@font/amita"
+        android:textSize="25sp"/>
+
+    <EditText
+        android:id="@+id/userInfo_Email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Phone"
+        android:textColor="@color/white"
+        android:fontFamily="@font/amita"
+        android:textSize="25sp"/>
+
+    <EditText
+        android:id="@+id/userInfo_Phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Password"
+        android:textColor="@color/white"
+        android:fontFamily="@font/amita"
+        android:textSize="25sp"/>
+
+    <EditText
+        android:id="@+id/userInfo_Password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+        <Button
+            android:id="@+id/userInfo_btnCancel"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:text="Close"
+            android:background="@drawable/btn_bg_design"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="30dp"/>
+
+        <Button
+            android:id="@+id/userInfo_btnSave"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:text="Save"
+            android:background="@drawable/btn_bg_design"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/userInfo_btnCancel"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

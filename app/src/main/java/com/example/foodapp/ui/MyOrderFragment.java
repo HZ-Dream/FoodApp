@@ -1,6 +1,7 @@
 package com.example.foodapp.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +26,7 @@ import com.example.foodapp.models.OrderDetails;
 import com.example.foodapp.models.Orders;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MyOrderFragment extends Fragment implements OrderAdapter.OnOrderDetailClickListener {
@@ -98,4 +101,61 @@ public class MyOrderFragment extends Fragment implements OrderAdapter.OnOrderDet
         bottomSheetDialog.setContentView(sheetView);
         bottomSheetDialog.show();
     }
+
+    @Override
+    public void onDeleteClick(long orderId) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
+        dialogBuilder.setTitle("Do you want to delete this order?");
+        dialogBuilder.setMessage("Please confirm information again before deleting!");
+        dialogBuilder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+                ordersDAO.deleteOrder(orderId);
+                Toast.makeText(requireContext(), "Delete successfully!", Toast.LENGTH_SHORT).show();
+                loadOrdersAndUpdateView();
+            }
+        });
+        dialogBuilder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+                dialogInterface.dismiss();
+            }
+        });
+        dialogBuilder.show();
+    }
+
+    private void loadOrdersAndUpdateView() {
+        SharedPreferences prefs = requireActivity().getSharedPreferences("USER_DATA", Context.MODE_PRIVATE);
+        int userId = prefs.getInt("userId", -1);
+
+        if (userId == -1) {
+            recyclerView.setVisibility(View.GONE);
+            emptyOrderTextView.setText("Please log in to see your orders");
+            emptyOrderTextView.setVisibility(View.VISIBLE);
+            if (orderAdapter != null) {
+                orderAdapter.updateOrderList(new ArrayList<>());
+            }
+            return;
+        }
+
+        List<Orders> updatedOrderList = ordersDAO.getOrdersByUserId(userId);
+
+        if (updatedOrderList.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            emptyOrderTextView.setText("You have no orders yet");
+            emptyOrderTextView.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyOrderTextView.setVisibility(View.GONE);
+        }
+
+        if (orderAdapter != null) {
+            orderAdapter.updateOrderList(updatedOrderList);
+        } else {
+            orderAdapter = new OrderAdapter(updatedOrderList, this);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setAdapter(orderAdapter);
+        }
+    }
+
 }

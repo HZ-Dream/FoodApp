@@ -63,7 +63,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         });
 
         holder.btnRemove.setOnClickListener(v -> {
-            cartsDAO.removeCart(item.getCartId());
+            cartsDAO.removeCartItem(item.getCartId());
             Toast.makeText(context, "Removed " + item.getProductName(), Toast.LENGTH_SHORT).show();
             if (listener != null) listener.onCartUpdated();
         });

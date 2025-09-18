@@ -123,4 +123,12 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
     public void callBack(int position, List<Products> list) {
         homeVerAdapter.updateData(list);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences prefs = requireActivity().getSharedPreferences("USER_DATA", Context.MODE_PRIVATE);
+        String name = prefs.getString("name", "Guest");
+        binding.tvHello.setText("Hello, " + name);
+    }
 }

@@ -35,6 +35,10 @@ public class CartsDAO {
         db.delete("Carts", null, null);
     }
 
+    public void removeCartItem(int cartId) {
+        db.delete("Carts", "id = ?", new String[]{String.valueOf(cartId)});
+    }
+
     public void removeCart(int userId) {
         db.delete("Carts", "userId = ?", new String[]{String.valueOf(userId)});
     }

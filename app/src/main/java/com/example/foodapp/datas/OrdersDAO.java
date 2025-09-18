@@ -46,6 +46,11 @@ public class OrdersDAO {
         return db.insert("OrderDetails", null, values);
     }
 
+    public void deleteOrder(long orderId) {
+        db.delete("Orders", "id = ?", new String[]{String.valueOf(orderId)});
+        db.delete("OrderDetails", "orderId = ?", new String[]{String.valueOf(orderId)});
+    }
+
     public List<Orders> getOrdersByUserId(int userId) {
         List<Orders> list = new ArrayList<>();
         String sql = "SELECT * FROM Orders WHERE userId = ?";

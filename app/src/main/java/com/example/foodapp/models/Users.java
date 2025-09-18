@@ -7,6 +7,14 @@ public class Users {
     private String phone;
     private String password;
 
+    public Users(int id, String email, String name, String phone, String password) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.phone = phone;
+        this.password = password;
+    }
+
     public Users(String email, String name, String phone, String password) {
         this.email = email;
         this.name = name;

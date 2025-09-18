@@ -37,4 +37,7 @@
     <string name="make_order">Make Order</string>
     <string name="phone_number">Phone Number</string>
     <string name="my_order">My Order</string>
+    <string name="shutdown_app">Shutdown App</string>
+    <string name="user_info">User Info</string>
+    <string name="my_info">My Info</string>
 </resources>

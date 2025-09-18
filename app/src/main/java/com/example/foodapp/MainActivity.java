@@ -3,6 +3,7 @@ package com.example.foodapp;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.example.foodapp.activities.WelcomeActivity;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -18,6 +20,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodapp.databinding.ActivityMainBinding;
+
+import androidx.core.view.GravityCompat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,26 +35,11 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        SharedPreferences prefs = getSharedPreferences("USER_DATA", MODE_PRIVATE);
-
-        String name = prefs.getString("name", "Beautiful Person");
-        String email = prefs.getString("email", "default@email.com");
-
         NavigationView navigationView = binding.navView;
-        View headerView = navigationView.getHeaderView(0);
 
-        TextView viewName = headerView.findViewById(R.id.viewName);
-        TextView viewEmail = headerView.findViewById(R.id.viewEmail);
-
-        viewName.setText(name);
-        viewEmail.setText(email);
+        updateNavigationHeader();
 
         binding.btnLogout.setOnClickListener(v -> {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.clear();
-            editor.apply();
-            Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
-            startActivity(intent);
             finish();
         });
 
@@ -67,13 +56,55 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            updateNavigationHeader();
+        });
+
     }
 
+    private void updateNavigationHeader() {
+        NavigationView navigationView = binding.navView;
+        View headerView = navigationView.getHeaderView(0);
+        TextView viewName = headerView.findViewById(R.id.viewName);
+        TextView viewEmail = headerView.findViewById(R.id.viewEmail);
+
+        SharedPreferences prefs = getSharedPreferences("USER_DATA", MODE_PRIVATE);
+        String name = prefs.getString("name", "Beautiful Person");
+        String email = prefs.getString("email", "default@email.com");
+
+        viewName.setText(name);
+        viewEmail.setText(email);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateNavigationHeader();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            return true;
+        } else if (id == R.id.shutDownApp) {
+            shutdownApplication();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void shutdownApplication() {
+        System.exit(0);
     }
 
     @Override
