@@ -28,4 +28,10 @@
         android:name="com.example.foodapp.ui.MyCartFragment"
         android:label="@string/my_cart"
         tools:layout="@layout/fragment_my_cart" />
+
+    <fragment
+        android:id="@+id/nav_my_order"
+        android:name="com.example.foodapp.ui.MyOrderFragment"
+        android:label="@string/my_order"
+        tools:layout="@layout/fragment_my_order" />
 </navigation>

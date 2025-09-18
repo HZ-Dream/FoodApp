@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,7 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.foodapp.R;
 import com.example.foodapp.adapters.CartAdapter;
 import com.example.foodapp.datas.CartsDAO;
+import com.example.foodapp.datas.OrdersDAO;
 import com.example.foodapp.models.CartItem;
+import com.example.foodapp.models.OrderDetails;
+import com.example.foodapp.models.Orders;
 
 import java.util.List;
 import java.util.Locale;
@@ -28,11 +33,14 @@ public class MyCartFragment extends Fragment implements CartAdapter.OnCartUpdate
     private RecyclerView recyclerView;
     private TextView emptyCartTextView;
     private TextView totalPriceTextView;
+    private Button btnOrder;
     private Group groupCheckout;
 
+    private OrdersDAO ordersDAO;
     private CartAdapter cartAdapter;
     private CartsDAO cartsDAO;
     private int userId;
+    private Context context;
 
     public MyCartFragment() {
         // Required empty public constructor
@@ -50,9 +58,11 @@ public class MyCartFragment extends Fragment implements CartAdapter.OnCartUpdate
         recyclerView = view.findViewById(R.id.cart_rec);
         emptyCartTextView = view.findViewById(R.id.empty_cart_text);
         totalPriceTextView = view.findViewById(R.id.total_price);
+        btnOrder = view.findViewById(R.id.btnOrder);
         groupCheckout = view.findViewById(R.id.group_checkout);
 
         cartsDAO = new CartsDAO(requireActivity());
+        ordersDAO = new OrdersDAO(requireActivity());
 
         SharedPreferences prefs = requireActivity().getSharedPreferences("USER_DATA", Context.MODE_PRIVATE);
         this.userId = prefs.getInt("userId", -1);
@@ -61,6 +71,29 @@ public class MyCartFragment extends Fragment implements CartAdapter.OnCartUpdate
             showEmptyView("Please log in to see your cart");
             return;
         }
+
+        btnOrder.setOnClickListener(v -> {
+            double subTotal = cartsDAO.getTotalPrice(userId);
+            String status = "Chưa xác nhận";
+            String dateOrdered = new java.text.SimpleDateFormat("HH:mm dd/MM/yyyy", java.util.Locale.getDefault()).format(new java.util.Date());
+
+            Orders orders = new Orders(userId, subTotal, status, dateOrdered);
+            long orderId = ordersDAO.addOrder(orders);
+
+            if (orderId > 0) {
+                List<CartItem> cartItemList = cartsDAO.getCartItemsForUser(userId);
+                for (CartItem cartItem : cartItemList) {
+                    ordersDAO.addOrderDetail(new OrderDetails(orderId, cartItem.getProductName(), cartItem.getQuantity(), cartItem.getProductPrice()));
+                }
+
+                cartsDAO.removeCart(userId);
+
+                updateCartView();
+                Toast.makeText(requireActivity(), "Order successfully!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(requireActivity(), "Order failed. Please try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         updateCartView();
     }

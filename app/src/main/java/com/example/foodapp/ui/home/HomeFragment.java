@@ -18,6 +18,7 @@ import com.example.foodapp.adapters.HomeVerAdapter;
 import com.example.foodapp.adapters.UpdateVerticalRec;
 import com.example.foodapp.databinding.FragmentHomeBinding;
 import com.example.foodapp.datas.CategoriesDAO;
+import com.example.foodapp.datas.OrdersDAO;
 import com.example.foodapp.datas.ProductsDAO;
 import com.example.foodapp.models.Categories;
 import com.example.foodapp.models.Products;
@@ -28,6 +29,7 @@ import java.util.List;
 public class HomeFragment extends Fragment implements UpdateVerticalRec {
     CategoriesDAO categoriesDAO;
     ProductsDAO productsDAO;
+    OrdersDAO ordersDAO;
     List<Products> productsList;
     HomeHorAdapter homeHorAdapter;
     HomeVerAdapter homeVerAdapter;
@@ -49,6 +51,7 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
 
         categoriesDAO = new CategoriesDAO(requireActivity());
         productsDAO = new ProductsDAO(requireActivity());
+        ordersDAO = new OrdersDAO(requireActivity());
 
         // resetData();
         addInitialData();
@@ -71,6 +74,8 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
     private void resetData() {
         productsDAO.deleteAllProduct();
         categoriesDAO.deleteAllCategory();
+        ordersDAO.deleteAllOrder();
+        ordersDAO.deleteAllOrderDetails();
     }
 
     private void addInitialData() {

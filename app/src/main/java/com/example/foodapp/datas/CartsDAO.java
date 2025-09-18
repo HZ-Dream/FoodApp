@@ -35,8 +35,8 @@ public class CartsDAO {
         db.delete("Carts", null, null);
     }
 
-    public void removeCart(int id) {
-        db.delete("Carts", "id = ?", new String[]{String.valueOf(id)});
+    public void removeCart(int userId) {
+        db.delete("Carts", "userId = ?", new String[]{String.valueOf(userId)});
     }
 
     public void changeQuantityCart(int cartId, String type) {

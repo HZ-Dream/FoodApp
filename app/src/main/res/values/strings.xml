@@ -36,4 +36,5 @@
     <string name="view_more">view more</string>
     <string name="make_order">Make Order</string>
     <string name="phone_number">Phone Number</string>
+    <string name="my_order">My Order</string>
 </resources>
