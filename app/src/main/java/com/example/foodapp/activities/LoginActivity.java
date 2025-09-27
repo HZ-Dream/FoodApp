@@ -18,6 +18,7 @@ import com.example.foodapp.MainActivity;
 import com.example.foodapp.R;
 import com.example.foodapp.datas.UsersDAO;
 import com.example.foodapp.datas.dbConnect;
+import com.example.foodapp.models.Users;
 
 public class LoginActivity extends AppCompatActivity {
     UsersDAO usersDAO;
@@ -35,6 +36,14 @@ public class LoginActivity extends AppCompatActivity {
         edtPasswordLog = findViewById(R.id.edtPasswordLog);
         btnLogin = findViewById(R.id.btnLogin);
 
+//        Users users = new Users("admin@gmail.com", "Admin", "0909090909", "admin123", true);
+//        boolean result = usersDAO.addUser(users);
+//        if(result){
+//            Toast.makeText(LoginActivity.this, "Admin", Toast.LENGTH_SHORT).show();
+//        }else{
+//            Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+//        }
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,20 +55,34 @@ public class LoginActivity extends AppCompatActivity {
                 }else{
                     boolean checkLogin = usersDAO.checkLogin(email, password);
                     if(checkLogin){
+                        boolean isAdmin = usersDAO.checkAdmin(email);
                         String name = usersDAO.getUserNameByEmail(email);
                         int userId = usersDAO.getUserIdByEmail(email);
                         SharedPreferences prefs = getSharedPreferences("USER_DATA", MODE_PRIVATE);
-                        prefs.edit()
-                                .putBoolean("isLoggedIn", true)
-                                .putInt("userId", userId)
-                                .putString("email", email)
-                                .putString("name", name)
-                                .apply();
+                        SharedPreferences.Editor editor = prefs.edit();
 
-                        Toast.makeText(LoginActivity.this, "Login successfully", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
+                        editor.putBoolean("isLoggedIn", true);
+                        editor.putInt("userId", userId);
+                        editor.putString("email", email);
+                        editor.putString("name", name);
+
+                        if(isAdmin){
+                            editor.putBoolean("isAdmin", true);
+                            editor.apply();
+
+                            Toast.makeText(LoginActivity.this, "Admin Login Successfully", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginActivity.this, AdminActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            editor.putBoolean("isAdmin", false);
+                            editor.apply();
+
+                            Toast.makeText(LoginActivity.this, "Login successfully", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
                     } else{
                         Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
                     }

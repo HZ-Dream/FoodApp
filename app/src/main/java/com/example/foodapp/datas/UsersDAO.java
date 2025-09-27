@@ -24,6 +24,7 @@ public class UsersDAO {
         values.put("name", users.getName());
         values.put("phone", users.getPhone());
         values.put("password", users.getPassword());
+        values.put("isAdmin", users.isAdmin());
         long result = db.insert("Users", null, values);
         return result != -1;
     }
@@ -73,6 +74,13 @@ public class UsersDAO {
 
     public boolean checkLogin(String email, String password) {
         Cursor cursor = db.rawQuery("SELECT * FROM Users WHERE email = ? AND password = ?", new String[]{email, password});
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        return exists;
+    }
+
+    public boolean checkAdmin(String email) {
+        Cursor cursor = db.rawQuery("SELECT * FROM Users WHERE email = ? AND isAdmin = 1", new String[]{email});
         boolean exists = cursor.getCount() > 0;
         cursor.close();
         return exists;

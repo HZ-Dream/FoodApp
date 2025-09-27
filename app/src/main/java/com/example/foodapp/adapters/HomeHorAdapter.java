@@ -15,6 +15,9 @@ import com.example.foodapp.models.Categories;
 import com.example.foodapp.models.Products;
 import java.util.List;
 
+import com.bumptech.glide.Glide;
+import java.io.File;
+
 public class HomeHorAdapter extends RecyclerView.Adapter<HomeHorAdapter.ViewHolder> {
     UpdateVerticalRec updateVerticalRec;
     Activity activity;
@@ -40,10 +43,26 @@ public class HomeHorAdapter extends RecyclerView.Adapter<HomeHorAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Categories category = categoriesList.get(position);
-
-        int resId = activity.getResources().getIdentifier(category.getImage(), "drawable", activity.getPackageName());
-        holder.imageView.setImageResource(resId);
         holder.textView.setText(category.getName());
+
+        String imageName = category.getImage();
+
+        File imageFile = new File(activity.getFilesDir(), imageName);
+
+        if (imageFile.exists()) {
+            Glide.with(activity)
+                    .load(imageFile)
+                    .into(holder.imageView);
+        } else {
+            int resId = activity.getResources().getIdentifier(imageName, "drawable", activity.getPackageName());
+            if (resId != 0) {
+                Glide.with(activity)
+                        .load(resId)
+                        .into(holder.imageView);
+            } else {
+                holder.imageView.setImageResource(R.drawable.placeholder_image);
+            }
+        }
 
         if (rowIndex == position) {
             holder.cardView.setBackgroundResource(R.drawable.change_bg);

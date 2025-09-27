@@ -79,13 +79,13 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
     }
 
     private void addInitialData() {
-        if (categoriesDAO.getAllCategories().isEmpty()) {
-            categoriesDAO.addCategory(new Categories(1, "Pizza", "pizza"));
-            categoriesDAO.addCategory(new Categories(2, "Burger", "burger"));
-            categoriesDAO.addCategory(new Categories(3, "Fries", "fries"));
-            categoriesDAO.addCategory(new Categories(4, "Ice Cream", "icecream"));
-            categoriesDAO.addCategory(new Categories(5, "Sandwich", "sandwich"));
-        }
+//        if (categoriesDAO.getAllCategories().isEmpty()) {
+//            categoriesDAO.addCategory(new Categories(1, "Pizza", "pizza"));
+//            categoriesDAO.addCategory(new Categories(2, "Burger", "burger"));
+//            categoriesDAO.addCategory(new Categories(3, "Fries", "fries"));
+//            categoriesDAO.addCategory(new Categories(4, "Ice Cream", "icecream"));
+//            categoriesDAO.addCategory(new Categories(5, "Sandwich", "sandwich"));
+//        }
 
         if (productsDAO.getAllProducts().isEmpty()) {
             // catId = 1 (Pizza)

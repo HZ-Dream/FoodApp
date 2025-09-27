@@ -1,6 +1,5 @@
 package com.example.foodapp;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -8,7 +7,6 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.TextView;
 
-import com.example.foodapp.activities.WelcomeActivity;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -20,8 +18,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodapp.databinding.ActivityMainBinding;
-
-import androidx.core.view.GravityCompat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         DrawerLayout drawer = binding.drawerLayout;
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_daily_meal, R.id.nav_favourite, R.id.nav_my_cart)
+                R.id.nav_home, R.id.nav_daily_meal, R.id.nav_favourite, R.id.nav_my_cart, R.id.nav_my_order, R.id.nav_editUser)
                 .setOpenableLayout(drawer)
                 .build();
 

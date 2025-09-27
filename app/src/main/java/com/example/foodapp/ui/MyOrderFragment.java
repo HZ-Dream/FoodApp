@@ -107,7 +107,7 @@ public class MyOrderFragment extends Fragment implements OrderAdapter.OnOrderDet
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
         dialogBuilder.setTitle("Do you want to delete this order?");
         dialogBuilder.setMessage("Please confirm information again before deleting!");
-        dialogBuilder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+        dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
                 ordersDAO.deleteOrder(orderId);
@@ -115,7 +115,7 @@ public class MyOrderFragment extends Fragment implements OrderAdapter.OnOrderDet
                 loadOrdersAndUpdateView();
             }
         });
-        dialogBuilder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+        dialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
                 dialogInterface.dismiss();

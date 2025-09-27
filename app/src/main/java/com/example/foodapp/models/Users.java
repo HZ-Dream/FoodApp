@@ -6,6 +6,15 @@ public class Users {
     private String name;
     private String phone;
     private String password;
+    private boolean isAdmin;
+
+    public Users(String email, String name, String phone, String password, boolean isAdmin) {
+        this.email = email;
+        this.name = name;
+        this.phone = phone;
+        this.password = password;
+        this.isAdmin = isAdmin;
+    }
 
     public Users(int id, String email, String name, String phone, String password) {
         this.id = id;
@@ -56,5 +65,13 @@ public class Users {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 }

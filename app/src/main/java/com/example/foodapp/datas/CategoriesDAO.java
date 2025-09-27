@@ -26,9 +26,29 @@ public class CategoriesDAO {
         return db.insert("Categories", null, values);
     }
 
+    public int updateCategory(Categories category) {
+        ContentValues values = new ContentValues();
+        values.put("name", category.getName());
+        values.put("image", category.getImage());
+        return db.update("Categories", values, "id = ?", new String[]{String.valueOf(category.getId())});
+    }
+
+    public int deleteCategory(int id) {
+        return db.delete("Categories", "id = ?", new String[]{String.valueOf(id)});
+    }
+
     public void deleteAllCategory() {
         db.delete("Categories", null, null);
         db.execSQL("DELETE FROM sqlite_sequence WHERE name='Categories'"); // Reset AUTOINCREMENT
+    }
+
+    public boolean checkProductExists(int categoryId) {
+        String query = "SELECT COUNT(*) FROM Products WHERE catId = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(categoryId)});
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+        return count > 0;
     }
 
     public List<Categories> getAllCategories() {
