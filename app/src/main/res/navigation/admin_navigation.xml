@@ -17,4 +17,25 @@
         android:label="@string/manage_categories"
         tools:layout="@layout/manage_categories" />
 
+    <fragment
+        android:id="@+id/nav_admin_product"
+        android:name="com.example.foodapp.ui.admin.ManageProductFragment"
+        android:title="@string/manage_products"
+        tools:layout="@layout/manage_products" />
+
+    <fragment
+        android:id="@+id/nav_admin_order"
+        android:name="com.example.foodapp.ui.admin.ManageOrdersFragment"
+        android:label="@string/manage_orders"
+        tools:layout="@layout/manage_orders" />
+
+    <fragment
+        android:id="@+id/nav_admin_user"
+        android:name="com.example.foodapp.ui.admin.ManageUsersFragment"
+        android:label="@string/manage_users"
+        tools:layout="@layout/manage_users" />
+
+
+
+
 </navigation>

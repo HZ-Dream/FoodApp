@@ -8,6 +8,7 @@ public class Products {
     private String image;
     private int catId;
 
+
     public Products(int id, String name, double price, String timeCook, String image, int catId) {
         this.id = id;
         this.name = name;
@@ -57,5 +58,8 @@ public class Products {
 
     public int getCatId() {
         return catId;
+    }
+    public void setCatId(int catId) {
+        this.catId = catId;
     }
 }

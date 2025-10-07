@@ -109,4 +109,36 @@ public class UsersDAO {
     public Cursor getAllUsers() {
         return db.rawQuery("SELECT * FROM Users", null);
     }
+
+    public void deleteUser(int userId) {
+        db.delete("Users", "id = ?", new String[]{String.valueOf(userId)});
+    }
+
+    public List<Users> getAllUsersList() {
+        List<Users> list = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM Users", null);
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                String email = cursor.getString(cursor.getColumnIndexOrThrow("email"));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                String phone = cursor.getString(cursor.getColumnIndexOrThrow("phone"));
+                String password = cursor.getString(cursor.getColumnIndexOrThrow("password"));
+                boolean isAdmin = cursor.getInt(cursor.getColumnIndexOrThrow("isAdmin")) == 1;
+
+                Users user = new Users(email, name, phone, password, isAdmin);
+                user.setId(id);  // <-- rất quan trọng
+                list.add(user);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return list;
+    }
+
+
+    public void setAdmin(int userId, boolean isAdmin) {
+        ContentValues values = new ContentValues();
+        values.put("isAdmin", isAdmin ? 1 : 0);
+        db.update("Users", values, "id = ?", new String[]{String.valueOf(userId)});
+    }
 }

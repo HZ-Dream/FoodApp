@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:foreground="@drawable/foreground_design"
         android:scaleType="centerCrop"
-        android:src="@drawable/bg4"
+        android:src="@drawable/fav3"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp" />
 

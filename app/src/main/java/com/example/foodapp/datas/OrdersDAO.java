@@ -34,6 +34,7 @@ public class OrdersDAO {
         values.put("subTotal", orders.getSubTotal());
         values.put("status", orders.getStatus());
         values.put("dateOrdered", orders.getDateOrdered());
+        values.put("address", orders.getAddress());
         return db.insert("Orders", null, values);
     }
 
@@ -64,7 +65,9 @@ public class OrdersDAO {
                 double subTotal = cursor.getDouble(cursor.getColumnIndexOrThrow("subTotal"));
                 String status = cursor.getString(cursor.getColumnIndexOrThrow("status"));
                 String dateOrdered = cursor.getString(cursor.getColumnIndexOrThrow("dateOrdered"));
-                list.add(new Orders(id, userID, subTotal, status, dateOrdered));
+                String address = cursor.getString(cursor.getColumnIndexOrThrow("address")); // địa chỉ
+
+                list.add(new Orders(id, userID, subTotal, status, dateOrdered, address));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -85,6 +88,32 @@ public class OrdersDAO {
                 double price = cursor.getDouble(cursor.getColumnIndexOrThrow("price"));
 
                 list.add(new OrderDetails(id, orderId, productName, quantity, price));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return list;
+    }
+
+    public void updateOrderStatus(long orderId, String newStatus) {
+        ContentValues values = new ContentValues();
+        values.put("status", newStatus);
+        db.update("Orders", values, "id = ?", new String[]{String.valueOf(orderId)});
+    }
+
+    public List<Orders> getAllOrders(String status) {
+        List<Orders> list = new ArrayList<>();
+        String sql = "SELECT * FROM Orders WHERE status = ?";
+        Cursor cursor = db.rawQuery(sql, new String[]{status});
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                int userID = cursor.getInt(cursor.getColumnIndexOrThrow("userId"));
+                double subTotal = cursor.getDouble(cursor.getColumnIndexOrThrow("subTotal"));
+                String dateOrdered = cursor.getString(cursor.getColumnIndexOrThrow("dateOrdered"));
+                String address = cursor.getString(cursor.getColumnIndexOrThrow("address")); // địa chỉ
+
+                list.add(new Orders(id, userID, subTotal, status, dateOrdered, address));
             } while (cursor.moveToNext());
         }
         cursor.close();

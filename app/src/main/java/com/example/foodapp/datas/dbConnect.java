@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 
 public class dbConnect extends SQLiteOpenHelper {
     private static final String dbName = "FoodApp";
-    private static final int dbVersion = 7;
+    private static final int dbVersion = 8;
 
     public dbConnect(@Nullable Context context) {
         super(context, dbName, null, dbVersion);
@@ -45,11 +45,13 @@ public class dbConnect extends SQLiteOpenHelper {
                 "FOREIGN KEY(userId) REFERENCES Users(id), " +
                 "FOREIGN KEY(foodId) REFERENCES Products(id))");
 
-        db.execSQL("CREATE TABLE Orders (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        db.execSQL("CREATE TABLE Orders (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "userId INTEGER, " +
                 "subTotal REAL, " +
                 "status TEXT, " +
                 "dateOrdered TEXT, " +
+                "address TEXT, " +
                 "FOREIGN KEY(userId) REFERENCES Users(id))");
 
         db.execSQL("CREATE TABLE OrderDetails (" +
@@ -61,25 +63,25 @@ public class dbConnect extends SQLiteOpenHelper {
                 "FOREIGN KEY(orderId) REFERENCES Orders(id))");
     }
 
-    // version now: 7
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < dbVersion) {
-            Cursor cursor = db.rawQuery("PRAGMA table_info(Users)", null);
-            boolean isAdminColumnExists = false;
+        if (oldVersion < 8) {
+            Cursor cursor = db.rawQuery("PRAGMA table_info(Orders)", null);
+            boolean addressColumnExists = false;
+
             if (cursor != null) {
-                int nameColumnIndex = cursor.getColumnIndex("name");
+                int nameIndex = cursor.getColumnIndex("name");
                 while (cursor.moveToNext()) {
-                    if (nameColumnIndex != -1 && "isAdmin".equalsIgnoreCase(cursor.getString(nameColumnIndex))) {
-                        isAdminColumnExists = true;
+                    if (nameIndex != -1 && "address".equalsIgnoreCase(cursor.getString(nameIndex))) {
+                        addressColumnExists = true;
                         break;
                     }
                 }
                 cursor.close();
             }
 
-            if (!isAdminColumnExists) {
-                db.execSQL("ALTER TABLE Users ADD COLUMN isAdmin BOOLEAN DEFAULT FALSE");
+            if (!addressColumnExists) {
+                db.execSQL("ALTER TABLE Orders ADD COLUMN address TEXT");
             }
         }
     }

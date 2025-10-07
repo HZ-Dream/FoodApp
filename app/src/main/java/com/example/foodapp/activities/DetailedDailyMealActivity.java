@@ -45,22 +45,23 @@ public class DetailedDailyMealActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         detailedDailyModelList = new ArrayList<>();
-        dailyAdapter = new DetailedDailyAdapter(detailedDailyModelList);
+        dailyAdapter = new DetailedDailyAdapter(this, detailedDailyModelList);
         recyclerView.setAdapter(dailyAdapter);
 
-        if (type != null && type.equalsIgnoreCase("breakfast")){
-            detailedDailyModelList.add(new DetailedDailyModel(R.drawable.fav1,"Breakfast","Description","4.4","40","10am to 9pm"));
-            detailedDailyModelList.add(new DetailedDailyModel(R.drawable.fav2,"Breakfast","Description","4.4","40","10am to 9pm"));
-            detailedDailyModelList.add(new DetailedDailyModel(R.drawable.fav3,"Breakfast","Description","4.4","40","10am to 9pm"));
+        if (type != null && type.equalsIgnoreCase("breakfast")) {
+            detailedDailyModelList.add(new DetailedDailyModel("fav1", "Breakfast", "Description", "4.4", "40", "10am to 9pm"));
+            detailedDailyModelList.add(new DetailedDailyModel("fav2", "Breakfast", "Description", "4.4", "40", "10am to 9pm"));
+            detailedDailyModelList.add(new DetailedDailyModel("fav3", "Breakfast", "Description", "4.4", "40", "10am to 9pm"));
             dailyAdapter.notifyDataSetChanged();
         }
 
-        if (type != null && type.equalsIgnoreCase("sweets")){
+        if (type != null && type.equalsIgnoreCase("sweets")) {
             imageView.setImageResource(R.drawable.sweets);
-            detailedDailyModelList.add(new DetailedDailyModel(R.drawable.s1,"Sweets","Description","4.4","40","10am to 9pm"));
-            detailedDailyModelList.add(new DetailedDailyModel(R.drawable.s2,"Sweets","Description","4.4","40","10am to 9pm"));
-            detailedDailyModelList.add(new DetailedDailyModel(R.drawable.s3,"Sweets","Description","4.4","40","10am to 9pm"));
+            detailedDailyModelList.add(new DetailedDailyModel("s1", "Sweets", "Description", "4.4", "40", "10am to 9pm"));
+            detailedDailyModelList.add(new DetailedDailyModel("s2", "Sweets", "Description", "4.4", "40", "10am to 9pm"));
+            detailedDailyModelList.add(new DetailedDailyModel("s3", "Sweets", "Description", "4.4", "40", "10am to 9pm"));
             dailyAdapter.notifyDataSetChanged();
         }
+
     }
 }

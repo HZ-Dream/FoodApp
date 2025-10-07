@@ -1,6 +1,7 @@
 package com.example.foodapp.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +13,21 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import android.util.Log;
 import com.example.foodapp.R;
 import com.example.foodapp.datas.CartsDAO;
 import com.example.foodapp.models.CartItem;
 
+import java.io.File;
 import java.util.List;
-import java.util.Locale;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     public interface OnCartUpdatedListener {
         void onCartUpdated();
     }
-    private final OnCartUpdatedListener listener;
 
+    private final OnCartUpdatedListener listener;
     private final Context context;
     private final List<CartItem> list;
     private final CartsDAO cartsDAO;
@@ -44,37 +47,53 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CartItem item = list.get(position);
-        int imageId = context.getResources().getIdentifier(item.getProductImage(), "drawable", context.getPackageName());
+        CartItem cartItem = list.get(position);
 
-        holder.imageView.setImageResource(imageId);
-        holder.name.setText(item.getProductName());
-        holder.quantity.setText("" + item.getQuantity());
-        holder.price.setText("" + item.getProductPrice());
+        holder.name.setText(cartItem.getProductName());
+        holder.quantity.setText(String.valueOf(cartItem.getQuantity()));
+        holder.price.setText(String.valueOf(cartItem.getProductPrice()));
+
+        String imagePath = cartItem.getProductImage();
+
+        if (imagePath != null && !imagePath.isEmpty()) {
+            File imageFile = new File(context.getFilesDir(), imagePath);
+            if (imageFile.exists()) {
+                Glide.with(context)
+                        .load(Uri.fromFile(imageFile))
+                        .placeholder(R.drawable.placeholder_image)
+                        .error(R.drawable.error_image)
+                        .into(holder.imageView);
+            } else {
+                holder.imageView.setImageResource(R.drawable.error_image);
+            }
+        } else {
+            holder.imageView.setImageResource(R.drawable.placeholder_image);
+        }
 
         holder.addQuantity.setOnClickListener(v -> {
-            cartsDAO.changeQuantityCart(item.getCartId(), "plus");
+            cartsDAO.changeQuantityCart(cartItem.getCartId(), "plus");
             if (listener != null) listener.onCartUpdated();
         });
 
         holder.minusQuantity.setOnClickListener(v -> {
-            cartsDAO.changeQuantityCart(item.getCartId(), "minus");
+            cartsDAO.changeQuantityCart(cartItem.getCartId(), "minus");
             if (listener != null) listener.onCartUpdated();
         });
 
         holder.btnRemove.setOnClickListener(v -> {
-            cartsDAO.removeCartItem(item.getCartId());
-            Toast.makeText(context, "Removed " + item.getProductName(), Toast.LENGTH_SHORT).show();
+            cartsDAO.removeCartItem(cartItem.getCartId());
+            Toast.makeText(context, "Removed " + cartItem.getProductName(), Toast.LENGTH_SHORT).show();
             if (listener != null) listener.onCartUpdated();
         });
     }
+
 
     @Override
     public int getItemCount() {
         return list.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView, addQuantity, minusQuantity;
         Button btnRemove;
         TextView name, quantity, price;

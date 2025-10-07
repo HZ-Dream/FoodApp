@@ -1,12 +1,15 @@
 package com.example.foodapp.ui;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +43,6 @@ public class MyCartFragment extends Fragment implements CartAdapter.OnCartUpdate
     private CartAdapter cartAdapter;
     private CartsDAO cartsDAO;
     private int userId;
-    private Context context;
 
     public MyCartFragment() {
         // Required empty public constructor
@@ -68,46 +70,74 @@ public class MyCartFragment extends Fragment implements CartAdapter.OnCartUpdate
         this.userId = prefs.getInt("userId", -1);
 
         if (userId == -1) {
-            showEmptyView("Please log in to see your cart");
+            showEmptyView("Vui lòng đăng nhập để xem giỏ hàng");
             return;
         }
 
-        btnOrder.setOnClickListener(v -> {
-            double subTotal = cartsDAO.getTotalPrice(userId);
-            String status = "Chưa xác nhận";
-            String dateOrdered = new java.text.SimpleDateFormat("HH:mm dd/MM/yyyy", java.util.Locale.getDefault()).format(new java.util.Date());
-
-            Orders orders = new Orders(userId, subTotal, status, dateOrdered);
-            long orderId = ordersDAO.addOrder(orders);
-
-            if (orderId > 0) {
-                List<CartItem> cartItemList = cartsDAO.getCartItemsForUser(userId);
-                for (CartItem cartItem : cartItemList) {
-                    ordersDAO.addOrderDetail(new OrderDetails(orderId, cartItem.getProductName(), cartItem.getQuantity(), cartItem.getProductPrice()));
-                }
-
-                cartsDAO.removeCart(userId);
-
-                updateCartView();
-                Toast.makeText(requireActivity(), "Order successfully!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(requireActivity(), "Order failed. Please try again.", Toast.LENGTH_SHORT).show();
-            }
-        });
+        btnOrder.setOnClickListener(v -> showAddressDialog());
 
         updateCartView();
     }
 
+    private void showAddressDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        builder.setTitle("Nhập địa chỉ giao hàng");
+
+        final EditText edtAddress = new EditText(requireActivity());
+        edtAddress.setHint("Nhập địa chỉ của bạn...");
+        edtAddress.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        edtAddress.setPadding(50, 40, 50, 40);
+
+        builder.setView(edtAddress);
+
+        builder.setPositiveButton("Xác nhận", (dialog, which) -> {
+            String address = edtAddress.getText().toString().trim();
+
+            if (address.isEmpty()) {
+                Toast.makeText(requireActivity(), "Vui lòng nhập địa chỉ!", Toast.LENGTH_SHORT).show();
+            } else {
+                placeOrder(address);
+            }
+        });
+
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
+
+        builder.show();
+    }
+
+    private void placeOrder(String address) {
+        double subTotal = cartsDAO.getTotalPrice(userId);
+        String status = "Chưa xác nhận";
+        String dateOrdered = new java.text.SimpleDateFormat("HH:mm dd/MM/yyyy", java.util.Locale.getDefault()).format(new java.util.Date());
+
+        Orders orders = new Orders(userId, subTotal, status, dateOrdered, address);
+        long orderId = ordersDAO.addOrder(orders);
+
+        if (orderId > 0) {
+            List<CartItem> cartItemList = cartsDAO.getCartItemsForUser(userId);
+            for (CartItem cartItem : cartItemList) {
+                ordersDAO.addOrderDetail(new OrderDetails(orderId, cartItem.getProductName(), cartItem.getQuantity(), cartItem.getProductPrice()));
+            }
+
+            cartsDAO.removeCart(userId);
+
+            updateCartView();
+            Toast.makeText(requireActivity(), "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(requireActivity(), "Đặt hàng thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void updateCartView() {
         if (userId == -1) {
-            showEmptyView("Please log in to see your cart");
+            showEmptyView("Vui lòng đăng nhập để xem giỏ hàng");
             return;
         }
 
         List<CartItem> cartItemList = cartsDAO.getCartItemsForUser(userId);
 
         if (cartItemList.isEmpty()) {
-            showEmptyView("Your cart is empty");
+            showEmptyView("Giỏ hàng trống");
         } else {
             showCartView(cartItemList);
         }
