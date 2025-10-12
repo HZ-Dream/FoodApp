@@ -6,6 +6,7 @@ public class Users {
     private String name;
     private String phone;
     private String password;
+    private String wishList;
     private boolean isAdmin;
 
     public Users(String email, String name, String phone, String password, boolean isAdmin) {
@@ -22,6 +23,16 @@ public class Users {
         this.name = name;
         this.phone = phone;
         this.password = password;
+    }
+
+    public Users(int id, String email, String name, String phone, String password, String wishList, boolean isAdmin) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.phone = phone;
+        this.password = password;
+        this.wishList = wishList;
+        this.isAdmin = isAdmin;
     }
 
     public Users(String email, String name, String phone, String password) {
@@ -68,6 +79,14 @@ public class Users {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setWishList(String wishList) {
+        this.wishList = wishList;
+    }
+
+    public String getWishList() {
+        return wishList;
     }
 
     public boolean isAdmin() {

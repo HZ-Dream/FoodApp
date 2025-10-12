@@ -48,10 +48,10 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_marginLeft="4dp">
-
+            
             <TextView
                 android:id="@+id/bottom_name"
-                android:layout_width="wrap_content"
+                android:layout_width="215dp"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:maxLines="1"
@@ -107,6 +107,13 @@
                     android:text="10:00 - 7:00"
                     android:textColor="@color/white"
                     android:textStyle="bold"/>
+
+                <ImageView
+                    android:id="@+id/add_to_wishList"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/baseline_favorite_24"
+                    android:layout_marginStart="20dp"/>
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout

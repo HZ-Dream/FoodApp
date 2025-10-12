@@ -62,4 +62,9 @@ public class Products {
     public void setCatId(int catId) {
         this.catId = catId;
     }
+
+    @Override
+    public String toString() {
+        return "Id: " + id + " - Name: " + name;
+    }
 }

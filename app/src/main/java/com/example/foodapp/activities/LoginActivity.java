@@ -36,14 +36,6 @@ public class LoginActivity extends AppCompatActivity {
         edtPasswordLog = findViewById(R.id.edtPasswordLog);
         btnLogin = findViewById(R.id.btnLogin);
 
-//        Users users = new Users("admin@gmail.com", "Admin", "0909090909", "admin123", true);
-//        boolean result = usersDAO.addUser(users);
-//        if(result){
-//            Toast.makeText(LoginActivity.this, "Admin", Toast.LENGTH_SHORT).show();
-//        }else{
-//            Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-//        }
-
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

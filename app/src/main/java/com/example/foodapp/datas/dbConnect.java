@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 
 public class dbConnect extends SQLiteOpenHelper {
     private static final String dbName = "FoodApp";
-    private static final int dbVersion = 8;
+    private static final int dbVersion = 9;
 
     public dbConnect(@Nullable Context context) {
         super(context, dbName, null, dbVersion);
@@ -22,6 +22,7 @@ public class dbConnect extends SQLiteOpenHelper {
                 "name TEXT, " +
                 "phone TEXT, " +
                 "password TEXT, " +
+                "wishList TEXT, " +
                 "isAdmin BOOLEAN)");
 
         db.execSQL("CREATE TABLE Categories (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -63,25 +64,27 @@ public class dbConnect extends SQLiteOpenHelper {
                 "FOREIGN KEY(orderId) REFERENCES Orders(id))");
     }
 
+    // db Now: 8
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 8) {
-            Cursor cursor = db.rawQuery("PRAGMA table_info(Orders)", null);
-            boolean addressColumnExists = false;
+        if (oldVersion < dbVersion) {
+            Cursor cursor = db.rawQuery("PRAGMA table_info(Users)", null);
+            boolean wishListColumnExists = false;
 
             if (cursor != null) {
                 int nameIndex = cursor.getColumnIndex("name");
                 while (cursor.moveToNext()) {
-                    if (nameIndex != -1 && "address".equalsIgnoreCase(cursor.getString(nameIndex))) {
-                        addressColumnExists = true;
+                    String columnName = cursor.getString(nameIndex);
+                    if ("wishList".equalsIgnoreCase(columnName)) {
+                        wishListColumnExists = true;
                         break;
                     }
                 }
                 cursor.close();
             }
 
-            if (!addressColumnExists) {
-                db.execSQL("ALTER TABLE Orders ADD COLUMN address TEXT");
+            if (!wishListColumnExists) {
+                db.execSQL("ALTER TABLE Users ADD COLUMN wishList TEXT");
             }
         }
     }

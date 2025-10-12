@@ -41,8 +41,25 @@ public class ProductsDAO {
     public int deleteProduct(int id) {
         return db.delete("Products", "id = ?", new String[]{String.valueOf(id)});
     }
+
     public void deleteAllProduct() {
         db.delete("Products", null, null);
+    }
+
+    public Products getProductById(int productId) {
+        Products product = null;
+        Cursor cursor = db.rawQuery("SELECT * FROM Products WHERE id = ?", new String[]{String.valueOf(productId)});
+        if (cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+            double price = cursor.getDouble(cursor.getColumnIndexOrThrow("price"));
+            String timeCook = cursor.getString(cursor.getColumnIndexOrThrow("timeCook"));
+            String image = cursor.getString(cursor.getColumnIndexOrThrow("image"));
+            int catId = cursor.getInt(cursor.getColumnIndexOrThrow("catId"));
+            product = new Products(id, name, price, timeCook, image, catId);
+        }
+        cursor.close();
+        return product;
     }
 
     public List<Products> getAllProducts() {
@@ -84,23 +101,21 @@ public class ProductsDAO {
         return list;
     }
 
-
-    public List<Products> getProductsByName(String name) {
+    public List<Products> searchProductsByName(String query) {
         List<Products> list = new ArrayList<>();
         String sql = "SELECT * FROM Products WHERE name LIKE ?";
-        String[] selectionArgs = {"%" + name + "%"};
+        String[] selectionArgs = {"%" + query + "%"};
 
         Cursor cursor = db.rawQuery(sql, selectionArgs);
         if (cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
-                String productName = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
                 double price = cursor.getDouble(cursor.getColumnIndexOrThrow("price"));
                 String timeCook = cursor.getString(cursor.getColumnIndexOrThrow("timeCook"));
                 String image = cursor.getString(cursor.getColumnIndexOrThrow("image"));
                 int catId = cursor.getInt(cursor.getColumnIndexOrThrow("catId"));
-
-                list.add(new Products(id, productName, price, timeCook, image, catId));
+                list.add(new Products(id, name, price, timeCook, image, catId));
             } while (cursor.moveToNext());
         }
         cursor.close();

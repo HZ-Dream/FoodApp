@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import java.io.File;
 import com.example.foodapp.R;
 import com.example.foodapp.datas.CartsDAO;
+import com.example.foodapp.datas.UsersDAO;
 import com.example.foodapp.models.Carts;
 import com.example.foodapp.models.Products;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -29,6 +30,7 @@ import java.util.List;
 
 public class HomeVerAdapter extends RecyclerView.Adapter<HomeVerAdapter.ViewHolder> {
     private final CartsDAO cartsDAO;
+    private final UsersDAO usersDAO;
     private final Context context;
     private final List<Products> list;
     private final int userId;
@@ -38,6 +40,8 @@ public class HomeVerAdapter extends RecyclerView.Adapter<HomeVerAdapter.ViewHold
         this.list = list;
 
         this.cartsDAO = new CartsDAO(context);
+        this.usersDAO = new UsersDAO(context);
+
         SharedPreferences prefs = context.getSharedPreferences("USER_DATA", MODE_PRIVATE);
         this.userId = prefs.getInt("userId", -1);
     }
@@ -97,6 +101,7 @@ public class HomeVerAdapter extends RecyclerView.Adapter<HomeVerAdapter.ViewHold
             TextView bottomPrice = sheetView.findViewById(R.id.bottom_price);
             TextView bottomTiming = sheetView.findViewById(R.id.bottom_timing);
             Button addToCart = sheetView.findViewById(R.id.add_to_cart);
+            ImageView addToWishList = sheetView.findViewById(R.id.add_to_wishList);
 
             bottomName.setText(product.getName());
             bottomPrice.setText(String.valueOf(product.getPrice()));
@@ -128,10 +133,38 @@ public class HomeVerAdapter extends RecyclerView.Adapter<HomeVerAdapter.ViewHold
                 bottomImg.setImageResource(R.drawable.error_image);
             }
 
+            final boolean isFavorite = usersDAO.isProductInWishList(userId, proId);
+            if (isFavorite) {
+                addToWishList.setImageResource(R.drawable.baseline_favorite_24);
+            } else {
+                addToWishList.setImageResource(R.drawable.ic_baseline_favorite_24);
+            }
+
+            addToWishList.setOnClickListener(view -> {
+                if (userId == -1) {
+                    Toast.makeText(context, "Please log in to use wish list", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (usersDAO.isProductInWishList(userId, proId)) {
+                    usersDAO.removeProductFromWishList(userId, proId);
+                    addToWishList.setImageResource(R.drawable.ic_baseline_favorite_24);
+                    Toast.makeText(context, "Removed from Wishlist", Toast.LENGTH_SHORT).show();
+                } else {
+                    usersDAO.addProductToWishList(userId, proId);
+                    addToWishList.setImageResource(R.drawable.baseline_favorite_24);
+                    Toast.makeText(context, "Added to Wishlist", Toast.LENGTH_SHORT).show();
+                }
+            });
 
             addToCart.setOnClickListener(view -> {
                 if (userId == -1) {
                     Toast.makeText(context, "Please log in to add items to cart", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (cartsDAO.isProductInCart(userId, proId)) {
+                    Toast.makeText(context, "Product already in cart", Toast.LENGTH_SHORT).show();
                     return;
                 }
 

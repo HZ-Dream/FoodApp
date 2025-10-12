@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Quản lý người dùng"
+        android:text="Manage Users"
         android:textSize="22sp"
         android:textStyle="bold"
         android:gravity="center"
@@ -28,7 +28,7 @@
         android:id="@+id/btnAddUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Thêm người dùng mới"
+        android:text="Create New User"
         android:layout_marginTop="8dp" />
 
 </LinearLayout>

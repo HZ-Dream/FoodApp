@@ -3,6 +3,8 @@ package com.example.foodapp.ui.home;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodapp.adapters.HomeHorAdapter;
 import com.example.foodapp.adapters.HomeVerAdapter;
+import com.example.foodapp.adapters.SearchAdapter;
 import com.example.foodapp.adapters.UpdateVerticalRec;
 import com.example.foodapp.databinding.FragmentHomeBinding;
 import com.example.foodapp.datas.CategoriesDAO;
@@ -34,6 +37,8 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
     HomeHorAdapter homeHorAdapter;
     HomeVerAdapter homeVerAdapter;
     private FragmentHomeBinding binding;
+    private SearchAdapter searchAdapter;
+    private List<Products> searchResultList;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -53,9 +58,6 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
         productsDAO = new ProductsDAO(requireActivity());
         ordersDAO = new OrdersDAO(requireActivity());
 
-        // resetData();
-        addInitialData();
-
         // Setup Horizontal RecyclerView
         List<Categories> categoryList = categoriesDAO.getAllCategories();
         homeHorAdapter = new HomeHorAdapter(this, requireActivity(), categoryList);
@@ -69,53 +71,50 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
         homeVerAdapter = new HomeVerAdapter(requireActivity(), productsList);
         binding.homeVerRec.setAdapter(homeVerAdapter);
         binding.homeVerRec.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false));
+
+        // Setup Search RecyclerView
+        searchResultList = new ArrayList<>();
+        searchAdapter = new SearchAdapter(requireActivity(), searchResultList);
+        binding.searchRec.setAdapter(searchAdapter);
+        binding.searchRec.setLayoutManager(new LinearLayoutManager(requireActivity()));
+
+        // Lắng nghe sự kiện thay đổi text trong ô tìm kiếm
+        binding.txtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                performSearch(s.toString());
+            }
+        });
+
+        // (Tùy chọn) Lắng nghe sự kiện click nút search
+        binding.btnSearch.setOnClickListener(v -> {
+            performSearch(binding.txtSearch.getText().toString());
+        });
     }
 
-    private void resetData() {
-        productsDAO.deleteAllProduct();
-        categoriesDAO.deleteAllCategory();
-        ordersDAO.deleteAllOrder();
-        ordersDAO.deleteAllOrderDetails();
-    }
+    private void performSearch(String query) {
+        String trimmedQuery = query.trim();
 
-    private void addInitialData() {
-//        if (categoriesDAO.getAllCategories().isEmpty()) {
-//            categoriesDAO.addCategory(new Categories(1, "Pizza", "pizza"));
-//            categoriesDAO.addCategory(new Categories(2, "Burger", "burger"));
-//            categoriesDAO.addCategory(new Categories(3, "Fries", "fries"));
-//            categoriesDAO.addCategory(new Categories(4, "Ice Cream", "icecream"));
-//            categoriesDAO.addCategory(new Categories(5, "Sandwich", "sandwich"));
-//        }
+        if (trimmedQuery.isEmpty()) {
+            // Nếu chuỗi rỗng, hiện lại giao diện mặc định
+            binding.homeHorRec.setVisibility(View.VISIBLE);
+            binding.homeVerRec.setVisibility(View.VISIBLE);
+            binding.searchRec.setVisibility(View.GONE);
+        } else {
+            // Nếu có từ khóa, ẩn giao diện mặc định và hiện kết quả tìm kiếm
+            binding.homeHorRec.setVisibility(View.GONE);
+            binding.homeVerRec.setVisibility(View.GONE);
+            binding.searchRec.setVisibility(View.VISIBLE);
 
-        if (productsDAO.getAllProducts().isEmpty()) {
-            // catId = 1 (Pizza)
-            productsDAO.addProduct(new Products("Pizza", 10.0, "10 minutes", "pizza1", 1));
-            productsDAO.addProduct(new Products("Pizza 2", 15.0, "15 minutes", "pizza2", 1));
-            productsDAO.addProduct(new Products("Pizza 3", 12.5, "12 minutes", "pizza3", 1));
-            productsDAO.addProduct(new Products("Pizza 4", 12.5, "10 minutes", "pizza4", 1));
-
-            // catId = 2 (Burger)
-            productsDAO.addProduct(new Products("Burger 1", 15.0, "15 minutes", "burger1", 2));
-            productsDAO.addProduct(new Products("Burger 2", 18.0, "20 minutes", "burger2", 2));
-            productsDAO.addProduct(new Products("Burger 4", 18.0, "10 minutes", "burger4", 2));
-
-            // catId = 3 (Fries)
-            productsDAO.addProduct(new Products("Fries 1", 10.0, "10 minutes", "fries1", 3));
-            productsDAO.addProduct(new Products("Fries", 15.0, "10 minutes", "fries2", 3));
-            productsDAO.addProduct(new Products("Fries 3", 10.0, "14 minutes", "fries3", 3));
-            productsDAO.addProduct(new Products("Fries 4", 15.0, "15 minutes", "fries4", 3));
-
-            // catId = 4 (Ice Cream)
-            productsDAO.addProduct(new Products("Ice Cream 1", 10.0, "5 minutes", "icecream1", 4));
-            productsDAO.addProduct(new Products("Ice Cream 2", 10.0, "10 minutes", "icecream2", 4));
-            productsDAO.addProduct(new Products("Ice Cream 3", 10.0, "5 minutes", "icecream3", 4));
-            productsDAO.addProduct(new Products("Ice Cream 4", 10.0, "6 minutes", "icecream4", 4));
-
-            // catId = 5 (Sandwich)
-            productsDAO.addProduct(new Products("Sandwich 1", 10.0, "10 minutes", "sandwich1", 5));
-            productsDAO.addProduct(new Products("Sandwich 2", 10.0, "12 minutes", "sandwich2", 5));
-            productsDAO.addProduct(new Products("Sandwich 3", 10.0, "14 minutes", "sandwich3", 5));
-            productsDAO.addProduct(new Products("Sandwich", 10.0, "10 minutes", "sandwich4", 5));
+            // Lấy kết quả từ DB và cập nhật adapter
+            List<Products> results = productsDAO.searchProductsByName(trimmedQuery);
+            searchAdapter.updateData(results);
         }
     }
 

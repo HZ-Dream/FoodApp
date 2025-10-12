@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -17,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.example.foodapp.adapters.ProductAdapter;
 import com.example.foodapp.databinding.ManageProductsBinding;
 import com.example.foodapp.datas.ProductsDAO;
 import com.example.foodapp.datas.CategoriesDAO;
@@ -45,6 +48,7 @@ public class ManageProductFragment extends Fragment {
 
     private List<Categories> categoryList;
     private ArrayAdapter<String> categoryAdapter;
+    private ProductAdapter adapter;
     private int selectedCategoryId = -1;
 
     @Nullable
@@ -106,7 +110,7 @@ public class ManageProductFragment extends Fragment {
 
     private void setupListView() {
         productList = new ArrayList<>();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, new ArrayList<>());
+        adapter = new ProductAdapter(getContext(), productList);
         binding.lvProducts.setAdapter(adapter);
 
         binding.lvProducts.setOnItemClickListener((parent, view, position, id) -> {
@@ -142,12 +146,9 @@ public class ManageProductFragment extends Fragment {
     private void loadProducts() {
         productList.clear();
         productList.addAll(productsDAO.getAllProducts());
+        adapter.notifyDataSetChanged();
 
-        List<String> names = new ArrayList<>();
-        for (Products p : productList) names.add(p.getName());
-        ((ArrayAdapter<String>) binding.lvProducts.getAdapter()).clear();
-        ((ArrayAdapter<String>) binding.lvProducts.getAdapter()).addAll(names);
-        ((ArrayAdapter<String>) binding.lvProducts.getAdapter()).notifyDataSetChanged();
+        setListViewHeightBasedOnChildren(binding.lvProducts);
     }
 
     private void addProduct() {
@@ -241,18 +242,32 @@ public class ManageProductFragment extends Fragment {
 
         productList.clear();
         productList.addAll(productsDAO.getProductsByCategoryId(selectedCategoryId));
-
-        List<String> names = new ArrayList<>();
-        for (Products p : productList) names.add(p.getName());
-
-        ArrayAdapter<String> adapter = (ArrayAdapter<String>) binding.lvProducts.getAdapter();
-        adapter.clear();
-        adapter.addAll(names);
         adapter.notifyDataSetChanged();
 
-        if (names.isEmpty()) {
+        setListViewHeightBasedOnChildren(binding.lvProducts);
+
+        if (productList.isEmpty()) {
             Toast.makeText(getContext(), "No products found for this category", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
     private void resetUI() {

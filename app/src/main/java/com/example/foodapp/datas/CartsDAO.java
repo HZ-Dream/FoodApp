@@ -31,6 +31,14 @@ public class CartsDAO {
         return db.insert("Carts", null, values);
     }
 
+    public boolean isProductInCart(int userId, int foodId) {
+        String query = "SELECT * FROM Carts WHERE userId = ? AND foodId = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), String.valueOf(foodId)});
+        boolean result = cursor.moveToFirst();
+        cursor.close();
+        return result;
+    }
+
     public void deleteAllCart() {
         db.delete("Carts", null, null);
     }

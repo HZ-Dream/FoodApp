@@ -4,10 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 import com.example.foodapp.models.Users;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UsersDAO {
@@ -24,9 +26,66 @@ public class UsersDAO {
         values.put("name", users.getName());
         values.put("phone", users.getPhone());
         values.put("password", users.getPassword());
+        values.put("wishList", users.getWishList());
         values.put("isAdmin", users.isAdmin());
         long result = db.insert("Users", null, values);
         return result != -1;
+    }
+
+    public String getWishListString(int userId) {
+        Cursor cursor = db.rawQuery("SELECT wishList FROM Users WHERE id = ?", new String[]{String.valueOf(userId)});
+        if (cursor.moveToFirst()) {
+            String wishList = cursor.getString(0);
+            cursor.close();
+            return wishList != null ? wishList : "";
+        }
+        cursor.close();
+        return "";
+    }
+
+    public boolean isProductInWishList(int userId, int productId) {
+        String wishListStr = getWishListString(userId);
+        if (wishListStr.isEmpty()) {
+            return false;
+        }
+        List<String> wishListIds = Arrays.asList(wishListStr.split(","));
+        return wishListIds.contains(String.valueOf(productId));
+    }
+
+    public int addProductToWishList(int userId, int productId) {
+        String currentWishList = getWishListString(userId);
+        String productIdStr = String.valueOf(productId);
+
+        if (isProductInWishList(userId, productId)) {
+            return 0;
+        }
+
+        String newWishList;
+        if (currentWishList.isEmpty()) {
+            newWishList = productIdStr;
+        } else {
+            newWishList = currentWishList + "," + productIdStr;
+        }
+
+        ContentValues values = new ContentValues();
+        values.put("wishList", newWishList);
+        return db.update("Users", values, "id = ?", new String[]{String.valueOf(userId)});
+    }
+
+    public int removeProductFromWishList(int userId, int productId) {
+        String currentWishList = getWishListString(userId);
+        if (!isProductInWishList(userId, productId)) {
+            return 0;
+        }
+
+        List<String> wishListIds = new ArrayList<>(Arrays.asList(currentWishList.split(",")));
+        wishListIds.remove(String.valueOf(productId));
+
+        String newWishList = TextUtils.join(",", wishListIds);
+
+        ContentValues values = new ContentValues();
+        values.put("wishList", newWishList);
+        return db.update("Users", values, "id = ?", new String[]{String.valueOf(userId)});
     }
 
     public boolean checkEmail(String email) {
