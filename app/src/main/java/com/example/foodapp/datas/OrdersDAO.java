@@ -47,14 +47,32 @@ public class OrdersDAO {
         return db.insert("OrderDetails", null, values);
     }
 
-    public void deleteOrder(long orderId) {
+    public boolean deleteOrder(long orderId) {
+        String sql = "SELECT * FROM Orders WHERE id = ?";
+        String[] selectionArgs = {String.valueOf(orderId)};
+
+        Cursor cursor = db.rawQuery(sql, selectionArgs);
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    String status = cursor.getString(cursor.getColumnIndexOrThrow("status"));
+                    if (status.equals("Đã xác nhận") || status.equals("Đang giao hàng")) {
+                        return false;
+                    }
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
+        }
+
         db.delete("Orders", "id = ?", new String[]{String.valueOf(orderId)});
         db.delete("OrderDetails", "orderId = ?", new String[]{String.valueOf(orderId)});
+        return true;
     }
 
     public List<Orders> getOrdersByUserId(int userId) {
         List<Orders> list = new ArrayList<>();
-        String sql = "SELECT * FROM Orders WHERE userId = ?";
+        String sql = "SELECT * FROM Orders WHERE userId = ? ORDER BY id DESC";
         String[] selectionArgs = {String.valueOf(userId)};
 
         Cursor cursor = db.rawQuery(sql, selectionArgs);
@@ -65,7 +83,7 @@ public class OrdersDAO {
                 double subTotal = cursor.getDouble(cursor.getColumnIndexOrThrow("subTotal"));
                 String status = cursor.getString(cursor.getColumnIndexOrThrow("status"));
                 String dateOrdered = cursor.getString(cursor.getColumnIndexOrThrow("dateOrdered"));
-                String address = cursor.getString(cursor.getColumnIndexOrThrow("address")); // địa chỉ
+                String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
 
                 list.add(new Orders(id, userID, subTotal, status, dateOrdered, address));
             } while (cursor.moveToNext());

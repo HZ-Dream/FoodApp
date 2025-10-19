@@ -20,9 +20,11 @@ import com.example.foodapp.adapters.HomeVerAdapter;
 import com.example.foodapp.adapters.SearchAdapter;
 import com.example.foodapp.adapters.UpdateVerticalRec;
 import com.example.foodapp.databinding.FragmentHomeBinding;
+import com.example.foodapp.datas.CartsDAO;
 import com.example.foodapp.datas.CategoriesDAO;
 import com.example.foodapp.datas.OrdersDAO;
 import com.example.foodapp.datas.ProductsDAO;
+import com.example.foodapp.datas.UsersDAO;
 import com.example.foodapp.models.Categories;
 import com.example.foodapp.models.Products;
 
@@ -33,6 +35,8 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
     CategoriesDAO categoriesDAO;
     ProductsDAO productsDAO;
     OrdersDAO ordersDAO;
+    UsersDAO usersDAO;
+    CartsDAO cartsDAO;
     List<Products> productsList;
     HomeHorAdapter homeHorAdapter;
     HomeVerAdapter homeVerAdapter;
@@ -57,6 +61,8 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
         categoriesDAO = new CategoriesDAO(requireActivity());
         productsDAO = new ProductsDAO(requireActivity());
         ordersDAO = new OrdersDAO(requireActivity());
+        usersDAO = new UsersDAO(requireActivity());
+        cartsDAO = new CartsDAO(requireActivity());
 
         // Setup Horizontal RecyclerView
         List<Categories> categoryList = categoriesDAO.getAllCategories();
@@ -68,13 +74,13 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
 
         // Setup Vertical RecyclerView
         productsList = new ArrayList<>();
-        homeVerAdapter = new HomeVerAdapter(requireActivity(), productsList);
+        homeVerAdapter = new HomeVerAdapter(requireActivity(), productsList, usersDAO, cartsDAO);
         binding.homeVerRec.setAdapter(homeVerAdapter);
         binding.homeVerRec.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false));
 
         // Setup Search RecyclerView
         searchResultList = new ArrayList<>();
-        searchAdapter = new SearchAdapter(requireActivity(), searchResultList);
+        searchAdapter = new SearchAdapter(requireActivity(), searchResultList, usersDAO, cartsDAO);
         binding.searchRec.setAdapter(searchAdapter);
         binding.searchRec.setLayoutManager(new LinearLayoutManager(requireActivity()));
 

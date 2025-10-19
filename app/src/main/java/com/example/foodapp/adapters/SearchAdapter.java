@@ -27,11 +27,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     private final CartsDAO cartsDAO;
     private final int userId;
 
-    public SearchAdapter(Context context, List<Products> list) {
+    public SearchAdapter(Context context, List<Products> list, UsersDAO usersDAO, CartsDAO cartsDAO) {
         this.context = context;
         this.list = list;
-        this.usersDAO = new UsersDAO(context);
-        this.cartsDAO = new CartsDAO(context);
+
+        this.usersDAO = usersDAO;
+        this.cartsDAO = cartsDAO;
+
         SharedPreferences prefs = context.getSharedPreferences("USER_DATA", Context.MODE_PRIVATE);
         this.userId = prefs.getInt("userId", -1);
     }

@@ -110,9 +110,14 @@ public class MyOrderFragment extends Fragment implements OrderAdapter.OnOrderDet
         dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
-                ordersDAO.deleteOrder(orderId);
-                Toast.makeText(requireContext(), "Delete successfully!", Toast.LENGTH_SHORT).show();
-                loadOrdersAndUpdateView();
+                boolean check = ordersDAO.deleteOrder(orderId);
+                if(check) {
+                    Toast.makeText(requireContext(), "Delete successfully!", Toast.LENGTH_SHORT).show();
+                    loadOrdersAndUpdateView();
+                } else {
+                    Toast.makeText(requireContext(), "Can't delete this order!", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
         dialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {

@@ -35,12 +35,12 @@ public class HomeVerAdapter extends RecyclerView.Adapter<HomeVerAdapter.ViewHold
     private final List<Products> list;
     private final int userId;
 
-    public HomeVerAdapter(Context context, List<Products> list) {
+    public HomeVerAdapter(Context context, List<Products> list, UsersDAO usersDAO, CartsDAO cartsDAO) {
         this.context = context;
         this.list = list;
 
-        this.cartsDAO = new CartsDAO(context);
-        this.usersDAO = new UsersDAO(context);
+        this.cartsDAO = cartsDAO;
+        this.usersDAO = usersDAO;
 
         SharedPreferences prefs = context.getSharedPreferences("USER_DATA", MODE_PRIVATE);
         this.userId = prefs.getInt("userId", -1);
