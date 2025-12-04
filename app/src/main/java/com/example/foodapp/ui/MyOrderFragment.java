@@ -115,7 +115,7 @@ public class MyOrderFragment extends Fragment implements OrderAdapter.OnOrderDet
                     Toast.makeText(requireContext(), "Delete successfully!", Toast.LENGTH_SHORT).show();
                     loadOrdersAndUpdateView();
                 } else {
-                    Toast.makeText(requireContext(), "Can't delete this order!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Confirmed order cannot be deleted!", Toast.LENGTH_SHORT).show();
                 }
 
             }

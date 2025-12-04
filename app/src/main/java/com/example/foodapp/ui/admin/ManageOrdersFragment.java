@@ -144,11 +144,14 @@ public class ManageOrdersFragment extends Fragment {
                 break;
         }
 
-        // Nếu là đơn hàng đã giao thì chỉ còn nút xóa
         builder.setNegativeButton("Xóa", (d, w) -> {
-            ordersDAO.deleteOrder(order.getId());
-            loadOrdersByStatus(currentStatus);
-            Toast.makeText(requireContext(), "🗑️ Đã xóa đơn hàng!", Toast.LENGTH_SHORT).show();
+            boolean check = ordersDAO.deleteOrder(order.getId());
+            if(check) {
+                loadOrdersByStatus(currentStatus);
+                Toast.makeText(requireContext(), "🗑️ Đã xóa đơn hàng!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(requireContext(), "Đơn đã xác nhận không được xoá!", Toast.LENGTH_SHORT).show();
+            }
         });
 
         builder.setNeutralButton("Đóng", null);

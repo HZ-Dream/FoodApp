@@ -56,7 +56,7 @@ public class OrdersDAO {
             if (cursor.moveToFirst()) {
                 do {
                     String status = cursor.getString(cursor.getColumnIndexOrThrow("status"));
-                    if (status.equals("Đã xác nhận") || status.equals("Đang giao hàng")) {
+                    if (status.equals("Đã xác nhận") || status.equals("Đang giao hàng") || status.equals("Đã giao hàng")) {
                         return false;
                     }
                 } while (cursor.moveToNext());

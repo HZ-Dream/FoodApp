@@ -1,5 +1,6 @@
 package com.example.foodapp.datas;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -62,9 +63,23 @@ public class dbConnect extends SQLiteOpenHelper {
                 "quantity INTEGER, " +
                 "price REAL, " +
                 "FOREIGN KEY(orderId) REFERENCES Orders(id))");
+
+        // Create Admin default
+        Cursor cursor = db.rawQuery("SELECT * FROM Users WHERE isAdmin = 1", null);
+        if (!cursor.moveToFirst()) {
+            ContentValues values = new ContentValues();
+            values.put("email", "admin@gmail.com");
+            values.put("name", "Administrator");
+            values.put("phone", "0000000000");
+            values.put("password", "admin123");
+            values.put("wishList", "");
+            values.put("isAdmin", 1);
+            db.insert("Users", null, values);
+        }
+        cursor.close();
     }
 
-    // db Now: 8
+    // db Now: 9
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < dbVersion) {
